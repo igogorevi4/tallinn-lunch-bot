@@ -1,0 +1,32 @@
+name: Tallinn Lunch Bot
+
+on:
+  # schedule:
+  #   - cron: '30 8 * * 1,2,3,4,5'
+  workflow_dispatch:
+
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+  run_python_script:
+    name: Run Python Script
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11.7'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+
+      - name: Run Python script
+        run: python3 scripts/lunch_bot.py $TELEGRAM_BOT_TOKEN $TELEGRAM_CHAT_ID
